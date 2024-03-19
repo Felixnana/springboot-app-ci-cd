@@ -1,0 +1,79 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: "${BUILD_ID}", description: 'Docker image tag')
+        string(name: 'DOCKER_IMAGE', defaultValue: 'ityourway/springboot-app-ci-cd', description: 'Docker image name')
+        string(name: 'CONTAINER_NAME', defaultValue: 'springboot-app', description: 'Docker container name')
+        string(name: 'REMOTE_USER', defaultValue: 'ec2-user', description: 'Remote server username')
+        string(name: 'REGISTRY', defaultValue: 'ityourway/springboot-app-ci-cd', description: 'Your Docker registry repository Name')
+        string(name: 'REGISTRY_CREDENTIAL', defaultValue: 'dockerhub-creds', description: 'Docker registry credentials id')
+        string(name: 'GITHUB_CREDENTIAL', defaultValue: 'github_creds', description: 'Github access credentials id')
+        string(name: 'GITHUB_REPO_URL', defaultValue: 'https://github.com/ityourway/springboot-app-ci-cd.git', description: 'Github repository url')
+        string(name: 'GITHUB_BRANCH', defaultValue: 'main', description: 'Github branch for your build')
+        string(name: 'SONARQUBE_SERVER_NAME', defaultValue: 'sonarqube-server', description: 'Name for your sonarqube server')
+        string(name: 'NEXUS_URL', defaultValue: '54.224.115.172:8081', description: 'Your Nexus URL')
+        string(name: 'NEXUS_CREDENTIAL', defaultValue: 'jenkins_nexus_creds', description: 'Your Nexus Credentials')
+    }
+
+    environment {
+        IMAGE_TAG = "${params.IMAGE_TAG}"
+        DOCKER_IMAGE = "${params.DOCKER_IMAGE}"
+        CONTAINER_NAME = "${params.CONTAINER_NAME}"
+        REMOTE_USER = "${params.REMOTE_USER}"
+        REGISTRY = "${params.REGISTRY}"
+        REGISTRY_CREDENTIAL = "${params.REGISTRY_CREDENTIAL}"
+        GITHUB_CREDENTIAL = "${params.GITHUB_CREDENTIAL}"
+        GITHUB_REPO_URL = "${params.GITHUB_REPO_URL}"
+        GITHUB_BRANCH = "${params.GITHUB_BRANCH}"
+        SONARQUBE_SERVER_NAME = "${params.SONARQUBE_SERVER_NAME}"
+        NEXUS_URL = "${params.NEXUS_URL}"
+        NEXUS_CREDENTIAL = "${params.NEXUS_CREDENTIAL}"
+    }
+
+    stages {
+        
+        stage("Validate Parameters") {
+            steps {
+                script {
+                    // Check if required parameters are provided
+                    def requiredParameters = ['IMAGE_TAG', 'DOCKER_IMAGE', 'CONTAINER_NAME', 'REMOTE_USER', 'REGISTRY', 'REGISTRY_CREDENTIAL', 'GITHUB_CREDENTIAL', 'GITHUB_REPO_URL', 'GITHUB_BRANCH']
+                    for (param in requiredParameters) {
+                        if (!params.containsKey(param) || params[param].trim() == "") {
+                            error("Parameter '$param' is missing or empty. Please provide a value.")
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage("Checkout Code From GitHub") {
+            steps {
+                script {
+                    git branch: "${GITHUB_BRANCH}", credentialsId: "${GITHUB_CREDENTIAL}", url: "${GITHUB_REPO_URL}"
+                }
+            }
+        }
+
+        
+        stage('Application Build And Test') {
+            steps {
+                sh './mvnw clean install'
+                sh './mvnw test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv("${SONARQUBE_SERVER_NAME}") {
+                        sh './mvnw sonar:sonar'
+                    }
+                }
+            }
+        }
+       
+        
+
+    }
+}
