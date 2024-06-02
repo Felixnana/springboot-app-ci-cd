@@ -19,8 +19,8 @@ pipeline {
                 script {
                     git branch: "${GITHUB_BRANCH}", credentialsId: "${GITHUB_CREDENTIAL}", url: "${GITHUB_REPO_URL}"
                 }
-            }
-        }
+            
+        
 
         stage('Copy Ansible Files') {
             steps {
@@ -78,4 +78,3 @@ pipeline {
         }
     }
 }
-
