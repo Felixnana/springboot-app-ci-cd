@@ -5,12 +5,14 @@ pipeline {
         string(name: 'GITHUB_CREDENTIAL', defaultValue: 'github_creds', description: 'Github access credentials id')
         string(name: 'GITHUB_REPO_URL', defaultValue: 'https://github.com/ityourway/springboot-app-ci-cd.git', description: 'Github repository url')
         string(name: 'GITHUB_BRANCH', defaultValue: 'main', description: 'Github branch for your build')
+        string(name: 'SSH_SERVER', defaultValue: 'ansible_server', description: 'The server that Jenkins will SSH into Using Publish Over SSH.')
     }
 
     environment {
         GITHUB_CREDENTIAL = "${params.GITHUB_CREDENTIAL}"
         GITHUB_REPO_URL = "${params.GITHUB_REPO_URL}"
         GITHUB_BRANCH = "${params.GITHUB_BRANCH}"
+        SSH_SERVER = "${params.SSH_SERVER}"
     }
 
     stages {
@@ -24,7 +26,7 @@ pipeline {
             steps {
                 script {
                    sshPublisher(publishers: [sshPublisherDesc(
-                       configName: 'ansibledeployment',
+                       configName: env.SSH_SERVER,
                        transfers: [sshTransfer(
                            sourceFiles: 'ansible/packages1.yml, ansible/packages2.yml, ansible/hosts',
                            removePrefix: 'ansible/',
@@ -53,7 +55,7 @@ pipeline {
 '''
 
                     sshPublisher(publishers: [sshPublisherDesc(
-                        configName: 'ansibledeployment',
+                        configName: env.SSH_SERVER,
                         transfers: [sshTransfer(
                             cleanRemote: false,
                             execCommand: deployCommand,
