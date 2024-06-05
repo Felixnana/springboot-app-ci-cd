@@ -5,7 +5,6 @@ pipeline {
         string(name: 'IMAGE_TAG', defaultValue: "${BUILD_ID}", description: 'Docker image tag')
         string(name: 'DOCKER_IMAGE', defaultValue: 'ityourway/springboot-app-ci-cd', description: 'Docker image name')
         string(name: 'CONTAINER_NAME', defaultValue: 'springboot-app', description: 'Docker container name')
-        string(name: 'REMOTE_USER', defaultValue: 'ec2-user', description: 'Remote server username')
         string(name: 'REGISTRY', defaultValue: 'ityourway/springboot-app-ci-cd', description: 'Your Docker registry repository Name')
         string(name: 'REGISTRY_CREDENTIAL', defaultValue: 'dockerhub-creds', description: 'Docker registry credentials id')
         string(name: 'GITHUB_CREDENTIAL', defaultValue: 'github_creds', description: 'Github access credentials id')
@@ -20,7 +19,6 @@ pipeline {
         IMAGE_TAG = "${params.IMAGE_TAG}"
         DOCKER_IMAGE = "${params.DOCKER_IMAGE}"
         CONTAINER_NAME = "${params.CONTAINER_NAME}"
-        REMOTE_USER = "${params.REMOTE_USER}"
         REGISTRY = "${params.REGISTRY}"
         REGISTRY_CREDENTIAL = "${params.REGISTRY_CREDENTIAL}"
         GITHUB_CREDENTIAL = "${params.GITHUB_CREDENTIAL}"
@@ -37,7 +35,7 @@ pipeline {
             steps {
                 script {
                     // Check if required parameters are provided
-                    def requiredParameters = ['IMAGE_TAG', 'DOCKER_IMAGE', 'CONTAINER_NAME', 'REMOTE_USER', 'REGISTRY', 'REGISTRY_CREDENTIAL', 'GITHUB_CREDENTIAL', 'GITHUB_REPO_URL', 'GITHUB_BRANCH']
+                    def requiredParameters = ['IMAGE_TAG', 'DOCKER_IMAGE', 'CONTAINER_NAME', 'REGISTRY', 'REGISTRY_CREDENTIAL', 'GITHUB_CREDENTIAL', 'GITHUB_REPO_URL', 'GITHUB_BRANCH']
                     for (param in requiredParameters) {
                         if (!params.containsKey(param) || params[param].trim() == "") {
                             error("Parameter '$param' is missing or empty. Please provide a value.")
