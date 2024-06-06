@@ -14,6 +14,8 @@ pipeline {
         string(name: 'NEXUS_URL', defaultValue: '3.237.202.232:8081', description: 'Your Nexus URL')
         string(name: 'NEXUS_CREDENTIAL', defaultValue: 'jenkins_nexus_creds', description: 'Your Nexus Credentials')
         string(name: 'REMOTE_USER', defaultValue: 'ec2-user', description: 'Remote server username')
+        string(name: 'MICROSERVICE_SERVER', defaultValue: 'microservice_server', description: 'The microservice server that Jenkins will SSH into Using Publish Over SSH.')
+        string(name: 'MONOLITHIC_SERVER', defaultValue: 'monolithic_server', description: 'The monolithic server that Jenkins will SSH into Using Publish Over SSH.')
     }
 
     environment {
@@ -29,6 +31,8 @@ pipeline {
         SONARQUBE_SERVER_NAME = "${params.SONARQUBE_SERVER_NAME}"
         NEXUS_URL = "${params.NEXUS_URL}"
         NEXUS_CREDENTIAL = "${params.NEXUS_CREDENTIAL}"
+        MICROSERVICE_SERVER = "${params.MICROSERVICE_SERVER}"
+        MONOLITHIC_SERVER = "${params.MONOLITHIC_SERVER}"
     }
 
     stages {
