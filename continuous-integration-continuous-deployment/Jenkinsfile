@@ -179,18 +179,19 @@ services:
                    def Command = '''
                        set -ex
                        cd ~/blog-app/
-                       # Check if any process is listening on port 8081 and kill it
+                # Check if any process is listening on port 8081 and kill it
                 PID=$(/usr/sbin/lsof -t -i:8081)
                 if [ -n "$PID" ]; then
-                    kill $PID
+                    kill $PID || true
                     echo "Killed process $PID"
                 else
                     echo "No process found listening on port 8081"
                 fi
 
                 # Run the new jar file
-                java -jar blog-0.0.1-SNAPSHOT.jar > logfile 2>&1 &
+                nohup java -jar blog-0.0.1-SNAPSHOT.jar > logfile 2>&1 &
                 echo "Started new blog application"
+                sleep 7
                 cat logfile
             '''
 
