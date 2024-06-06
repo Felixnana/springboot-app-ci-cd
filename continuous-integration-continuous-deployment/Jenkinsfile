@@ -189,7 +189,7 @@ services:
                 fi
 
                 # Run the new jar file
-                nohup java -jar blog-0.0.1-SNAPSHOT.jar > logfile 2>&1 &
+                java -jar blog-0.0.1-SNAPSHOT.jar > logfile 2>&1 &
                 echo "Started new blog application"
                 sleep 7
                 cat logfile
