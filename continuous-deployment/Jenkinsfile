@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     // Check if required parameters are provided
-                    def requiredParameters = ['IMAGE_TAG', 'DOCKER_IMAGE', 'CONTAINER_NAME', 'REMOTE_USER', 'REGISTRY', 'REGISTRY_CREDENTIAL', 'GITHUB_CREDENTIAL', 'GITHUB_REPO_URL', 'GITHUB_BRANCH']
+                    def requiredParameters = ['DEPLOYMENT_ACTION', 'REMOTE_USER']
                     for (param in requiredParameters) {
                         if (!params.containsKey(param) || params[param].trim() == "") {
                             error("Parameter '$param' is missing or empty. Please provide a value.")
