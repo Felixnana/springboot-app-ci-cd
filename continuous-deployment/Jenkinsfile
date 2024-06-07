@@ -2,17 +2,24 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'NEXUS_JAR_FILE_URL', description: 'URL Of The Existing Jar File In Nexus To be Deployed')
+        choice(name: 'DEPLOYMENT_ACTION', choices: ['Monolithic_Deployment', 'Microservice_Deployment', 'All_Deployments'], description: 'Select Your Preffered Deployment Type')
         string(name: 'DOCKER_IMAGE', description: 'Existing Docker Image To Be Deployed From Your DockerHub Registry. Eg: springboot-app-ci-cd:V004')
         string(name: 'CONTAINER_NAME', description: 'Your Preffered Name For Container To Be Created')
-        string(name: 'NEXUS_JAR_FILE_URL', description: 'URL Of The Existing Jar File In Nexus To be Deployed')
+        string(name: 'JAR_FILE_NAME', description: 'Name Of The Existing Jar File In Nexus To be Deployed. Eg : blog-0.0.1-20240606.064611-3.jar')
+        string(name: 'NEXUS_JAR_FILE_URL', description: 'URL Of The Existing Jar File In Nexus To be Deployed. Eg : http://44.204.99.33:8081/repository/maven-snapshots/com/app/blog/0.0.1-SNAPSHOT/blog-0.0.1-20240606.064611-3.jar')
         string(name: 'REMOTE_USER', defaultValue: 'ec2-user', description: 'Remote server username')
         string(name: 'MICROSERVICE_SERVER', defaultValue: 'microservice_server', description: 'The microservice server that Jenkins will SSH into Using Publish Over SSH.')
         string(name: 'MONOLITHIC_SERVER', defaultValue: 'monolithic_server', description: 'The monolithic server that Jenkins will SSH into Using Publish Over SSH.')
     }
 
     environment {
+        DEPLOYMENT_ACTION = "${params.DEPLOYMENT_ACTION}"
+        DOCKER_IMAGE = "${params.DOCKER_IMAGE}"
+        CONTAINER_NAME = "${params.CONTAINER_NAME}"
+        JAR_FILE_NAME = "${params.JAR_FILE_NAME}"
+        NEXUS_JAR_FILE_URL = "${params.NEXUS_JAR_FILE_URL}"
         REMOTE_USER = "${params.REMOTE_USER}"
+        JAR_FILE_NAME = "${params.JAR_FILE_NAME}"
         MICROSERVICE_SERVER = "${params.MICROSERVICE_SERVER}"
         MONOLITHIC_SERVER = "${params.MONOLITHIC_SERVER}"
     }
@@ -43,16 +50,20 @@ pipeline {
 
 services:
   blog-application:
-    image: ${DOCKER_IMAGE}:V00${IMAGE_TAG}
+    image: ${DOCKER_IMAGE}
     container_name: ${CONTAINER_NAME}
     ports:
       - "8081:8081"' > /home/${REMOTE_USER}/deployment/docker-compose.yml
+      
     cd /home/${REMOTE_USER}/deployment/
+    
     sudo docker rm -f ${CONTAINER_NAME}
+    
     sudo /usr/local/bin/docker-compose down 
+    
     echo 'Removed old container'
     sleep 3
-    echo 'Starting a new container with the image ${DOCKER_IMAGE}:V00${IMAGE_TAG}'
+    echo 'Starting a new container with the image ${DOCKER_IMAGE}'
     sudo /usr/local/bin/docker-compose up -d
 '''
 
@@ -94,9 +105,14 @@ services:
                 else
                     echo "No process found listening on port 8081"
                 fi
-
-                # Run the new jar file
-                java -jar blog-0.0.1-SNAPSHOT.jar > logfile 2>&1 &
+                # Export variables
+                USERNAME=
+                ARN="
+                PASSWORD=`/usr/local/bin/aws secretsmanager get-secret-value --secret-id $ARN --query "SecretString" --output=text`
+                
+                # Download And Run Desired Jar file
+                curl -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD} -O "${NEXU_JAR_FILE_URL}"
+                java -jar "${JAR_FILE_NAME}" > logfile 2>&1 &
                 echo "Started new blog application"
                 sleep 7
                 cat logfile
