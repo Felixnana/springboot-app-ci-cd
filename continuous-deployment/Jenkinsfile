@@ -2,6 +2,10 @@ pipeline {
     agent any
 
     parameters {
+        string(name: 'NEXUS_JAR_FILE_URL', description: 'URL Of The Existing Jar File In Nexus To be Deployed')
+        string(name: 'DOCKER_IMAGE', description: 'Existing Docker Image To Be Deployed From Your DockerHub Registry. Eg: springboot-app-ci-cd:V004')
+        string(name: 'CONTAINER_NAME', description: 'Your Preffered Name For Container To Be Created')
+        string(name: 'NEXUS_JAR_FILE_URL', description: 'URL Of The Existing Jar File In Nexus To be Deployed')
         string(name: 'REMOTE_USER', defaultValue: 'ec2-user', description: 'Remote server username')
         string(name: 'MICROSERVICE_SERVER', defaultValue: 'microservice_server', description: 'The microservice server that Jenkins will SSH into Using Publish Over SSH.')
         string(name: 'MONOLITHIC_SERVER', defaultValue: 'monolithic_server', description: 'The monolithic server that Jenkins will SSH into Using Publish Over SSH.')
