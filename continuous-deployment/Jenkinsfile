@@ -30,12 +30,19 @@ pipeline {
         stage("Validate Parameters") {
             steps {
                 script {
-                    // Check if required parameters are provided
-                    def requiredParameters = ['DEPLOYMENT_ACTION', 'REMOTE_USER']
-                    for (param in requiredParameters) {
-                        if (!params.containsKey(param) || params[param].trim() == "") {
-                            error("Parameter '$param' is missing or empty. Please provide a value.")
+                    try {
+                        // List of required parameters
+                        def requiredParameters = ['DEPLOYMENT_ACTION', 'REMOTE_USER']
+                        
+                        // Check each required parameter
+                        for (param in requiredParameters) {
+                            if (!params.containsKey(param) || params[param].trim() == "") {
+                                error("Parameter '${param}' is missing or empty. Please provide a value.")
+                            }
                         }
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        throw e
                     }
                 }
             }
