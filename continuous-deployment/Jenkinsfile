@@ -103,8 +103,9 @@ services:
             steps {
                 script {
                    def Command = '''
-                       set -ex
-                       cd ~/blog-app/
+                set -ex
+                cd ~/blog-app/
+                
                 # Check if any process is listening on port 8081 and kill it
                 PID=$(/usr/sbin/lsof -t -i:8081)
                 if [ -n "$PID" ]; then
@@ -113,15 +114,32 @@ services:
                 else
                     echo "No process found listening on port 8081"
                 fi
-                 # Export Variables To Retrieve Secrets from Secrets Manager
+                
+                # Export Variables To Retrieve Secrets from Secrets Manager
                 export ARN="${SECRETS_ARN}"
                 secret=$(aws secretsmanager get-secret-value --secret-id $ARN --query "SecretString" --output=text)
+                if [ $? -ne 0 ]; then
+                    echo "Failed to retrieve secrets"
+                    exit 1
+                fi
                 export NEXUS_USERNAME=$(echo $secret | sed -n "s|.*\\\"NEXUS_USERNAME\\\":\\\"\\([^\\\"]*\\)\\\".*|\\1|p")
                 export NEXUS_PASSWORD=$(echo $secret | sed -n "s|.*\\\"NEXUS_PASSWORD\\\":\\\"\\([^\\\"]*\\)\\\".*|\\1|p")
                 
+                echo "NEXUS_USERNAME=${NEXUS_USERNAME}"
+                echo "NEXUS_PASSWORD=${NEXUS_PASSWORD}"
+                
                 # Download And Run Desired Jar file
                 curl -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" -O "${NEXU_JAR_FILE_URL}"
+                if [ $? -ne 0 ]; then
+                    echo "Failed to download JAR file"
+                    exit 1
+                fi
                 java -jar "${JAR_FILE_NAME}" > logfile 2>&1 &
+                if [ $? -ne 0 ]; then
+                    echo "Failed to start the application"
+                    cat logfile
+                    exit 1
+                fi
                 echo "Started new blog application"
                 sleep 7
                 cat logfile
