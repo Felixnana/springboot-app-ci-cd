@@ -4,7 +4,7 @@ pipeline {
     parameters {
         choice(name: 'DEPLOYMENT_ACTION', choices: ['', 'Monolithic_Deployment', 'Microservice_Deployment', 'All_Deployments'], description: 'Select Your Preffered Deployment Type')
         string(name: 'SECRETS_ARN', description: 'The ARN of Your Secret In Secrets Manager. Optional If DEPLOYMENT_ACTION = Microservice_Deployment Eg : arn:aws:secretsmanager:us-east-1:710589867007:secret:nexus_login_credentials-3y25QH')
-        string(name: 'DOCKER_IMAGE', description: 'Existing Docker Image To Be Deployed From Your DockerHub Registry.Optional If DEPLOYMENT_ACTION = Monolithic_Deployment  Eg: springboot-app-ci-cd:V004')
+        string(name: 'DOCKER_IMAGE', description: 'Existing Docker Image To Be Deployed From Your DockerHub Registry.Optional If DEPLOYMENT_ACTION = Monolithic_Deployment  Eg: ityourway/springboot-app-ci-cd:V004')
         string(name: 'CONTAINER_NAME', description: 'Your Preffered Name For Container To Be Created. Optional If DEPLOYMENT_ACTION = Monolithic_Deployment')
         string(name: 'JAR_FILE_NAME', description: 'Name Of The Existing Jar File In Nexus To be Deployed. Optional If DEPLOYMENT_ACTION = Microservice_Deployment Eg : blog-0.0.1-20240606.064611-3.jar')
         string(name: 'NEXUS_JAR_FILE_URL', description: 'URL Of The Existing Jar File In Nexus To be Deployed. Optional If DEPLOYMENT_ACTION = Microservice_Deployment. Eg : http://44.204.99.33:8081/repository/maven-snapshots/com/app/blog/0.0.1-SNAPSHOT/blog-0.0.1-20240606.064611-3.jar')
