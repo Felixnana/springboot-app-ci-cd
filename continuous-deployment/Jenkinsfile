@@ -145,11 +145,6 @@ services:
     }
 }
 
-  post {
-        failure {
-            echo "Pipeline failed due to errors."
-            currentBuild.result = 'FAILED'
-        }
-    }
+  
     }
 }
