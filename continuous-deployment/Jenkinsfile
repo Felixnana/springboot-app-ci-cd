@@ -129,7 +129,7 @@ services:
                 echo "NEXUS_PASSWORD=${NEXUS_PASSWORD}"
                 
                 # Download And Run Desired Jar file
-                curl -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" -O "${NEXU_JAR_FILE_URL}"
+                curl -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" -O "${NEXUS_JAR_FILE_URL}"
                 if [ $? -ne 0 ]; then
                     echo "Failed to download JAR file"
                     exit 1
