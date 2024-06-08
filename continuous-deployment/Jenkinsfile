@@ -105,13 +105,14 @@ services:
                 else
                     echo "No process found listening on port 8081"
                 fi
-                # Export variables
-                USERNAME=
-                ARN="
-                PASSWORD=`/usr/local/bin/aws secretsmanager get-secret-value --secret-id $ARN --query "SecretString" --output=text`
+                # Export Variables To Retrieve Secrets from Secrets Manager
+                export ARN="arn:aws:secretsmanager:us-east-1:710589867007:secret:nexus_login_credentials-3y25QH"
+                secret=$(aws secretsmanager get-secret-value --secret-id $ARN --query "SecretString" --output=text)
+                export NEXUS_USERNAME=$(echo $secret | sed -n 's|.*"NEXUS_USERNAME":"\([^"]*\)".*|\1|p')
+                export NEXUS_PASSWORD=$(echo $secret | sed -n 's|.*"NEXUS_PASSWORD":"\([^"]*\)".*|\1|p')
                 
                 # Download And Run Desired Jar file
-                curl -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD} -O "${NEXU_JAR_FILE_URL}"
+                curl -u "${NEXUS_USERNAME}":"${NEXUS_PASSWORD}" -O "${NEXU_JAR_FILE_URL}"
                 java -jar "${JAR_FILE_NAME}" > logfile 2>&1 &
                 echo "Started new blog application"
                 sleep 7
