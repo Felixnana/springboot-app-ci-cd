@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: 'DEPLOYMENT_ACTION', choices: ['Monolithic_Deployment', 'Microservice_Deployment', 'All_Deployments'], description: 'Select Your Preffered Deployment Type')
+        choice(name: 'DEPLOYMENT_ACTION', choices: ['', 'Monolithic_Deployment', 'Microservice_Deployment', 'All_Deployments'], description: 'Select Your Preffered Deployment Type')
         string(name: 'SECRETS_ARN', description: 'The ARN of Your Secret In Secrets Manager. Optional If DEPLOYMENT_ACTION = Microservice_Deployment Eg : arn:aws:secretsmanager:us-east-1:710589867007:secret:nexus_login_credentials-3y25QH')
         string(name: 'DOCKER_IMAGE', description: 'Existing Docker Image To Be Deployed From Your DockerHub Registry.Optional If DEPLOYMENT_ACTION = Monolithic_Deployment  Eg: springboot-app-ci-cd:V004')
         string(name: 'CONTAINER_NAME', description: 'Your Preffered Name For Container To Be Created. Optional If DEPLOYMENT_ACTION = Monolithic_Deployment')
