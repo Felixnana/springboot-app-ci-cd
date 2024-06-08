@@ -20,7 +20,6 @@ pipeline {
         JAR_FILE_NAME = "${params.JAR_FILE_NAME}"
         NEXUS_JAR_FILE_URL = "${params.NEXUS_JAR_FILE_URL}"
         REMOTE_USER = "${params.REMOTE_USER}"
-        JAR_FILE_NAME = "${params.JAR_FILE_NAME}"
         MICROSERVICE_SERVER = "${params.MICROSERVICE_SERVER}"
         MONOLITHIC_SERVER = "${params.MONOLITHIC_SERVER}"
         SECRETS_ARN = "${params.SECRETS_ARN}"
