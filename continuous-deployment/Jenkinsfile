@@ -122,15 +122,14 @@ services:
                     # Export Variables To Retrieve Secrets from Secrets Manager
                     export ARN="${SECRETS_ARN}"
                     secret=$(aws secretsmanager get-secret-value --secret-id "${ARN}" --query "SecretString" --output=text)
-                    echo "secret = ${secret}"
+                    
                     if [ $? -ne 0 ]; then
                         echo "Failed to retrieve secrets"
                         exit 1
                     fi
                     export NEXUS_USER=$(echo $secret | sed -n "s|.*\\\"NEXUS_USERNAME\\\":\\\"\\([^\\\"]*\\)\\\".*|\\1|p")
                     export NEXUS_PASS=$(echo $secret | sed -n "s|.*\\\"NEXUS_PASSWORD\\\":\\\"\\([^\\\"]*\\)\\\".*|\\1|p")
-                    echo ${NEXUS_USER}
-                    echo ${NEXUS_PASS}
+                    
                     # Download And Run Desired Jar file
                     curl -u "${NEXUS_USER}":"${NEXUS_PASS}" -O "${NEXUS_JAR_FILE_URL}"
                     if [ $? -ne 0 ]; then
