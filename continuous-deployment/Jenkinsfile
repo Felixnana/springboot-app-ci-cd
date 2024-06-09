@@ -52,6 +52,9 @@ pipeline {
         }   
 
         stage('Deploy To Microservice Server') {
+            when {
+                expression { params.DEPLOYMENT_ACTION == "All_Deployments" || params.DEPLOYMENT_ACTION == "Microservice_Deployment" }
+            }
             steps {
                 script {
                    def deployCommand = '''
@@ -103,6 +106,9 @@ services:
         }
 
         stage('Deploy To Monolithic Server') {
+            when {
+                expression { params.DEPLOYMENT_ACTION == "All_Deployments" || params.DEPLOYMENT_ACTION == "Monolithic_Deployment" }
+            }
             steps {
                 script {
                    def Command = '''
