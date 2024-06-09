@@ -64,7 +64,7 @@ pipeline {
             }
         }
 
-        stage('Terraform Apply') {
+        stage('Terraform Apply Or Destroy') {
             steps {
                 script {
                     dir("${WORKSPACE}/terraform") {
