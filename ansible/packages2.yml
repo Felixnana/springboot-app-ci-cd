@@ -45,4 +45,15 @@
       systemd:
         name: docker
         state: started
-        enabled: yes   
+        enabled: yes 
+
+    - name: Add jenkins to the docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+
+    - name: Restart Docker service
+      service:
+        name: docker
+        state: restarted    
