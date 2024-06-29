@@ -4,6 +4,12 @@
     "repo": "https://github.com/ityourway/springboot-app-ci-cd.git",
     "branch": "main",
     "jenkinsfile": "terraform/Jenkinsfile"
+  },
+  {
+    "name": "infrastructure-provisioning-pipeline",
+    "repo": "https://github.com/ityourway/springboot-app-ci-cd.git",
+    "branch": "main",
+    "jenkinsfile": "ansible/Jenkinsfile"
   }
   
   
