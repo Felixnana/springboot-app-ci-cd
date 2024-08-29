@@ -5,7 +5,7 @@ variable "region" {
 
 variable "vpc_id" {
   description = "The ID of the VPC where resources will be created"
-  default     = "vpc-09e1f46af83af27db"
+  default     = "vpc-0b0f250a9b5030f46"
 }
 
 variable "instance_ami" {
